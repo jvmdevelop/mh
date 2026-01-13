@@ -1,0 +1,13 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.Authentication.BearerToken
+
+@code {
+    private string Message { get; set; }
+}
+
+<PageTitle>Home</PageTitle>
+
+<h1>Numen!</h1>
+
+<input @bind="Message" placeholder="My problem..." />
+<p>@Message</p>
