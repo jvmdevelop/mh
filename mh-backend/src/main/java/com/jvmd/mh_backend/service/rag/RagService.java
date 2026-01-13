@@ -20,15 +20,9 @@ public class RagService {
         List<String> list = searcher.retrieve(message);
         list.add(0, builder.build(message));
 
-
-
-
         return AiMessage.builder()
                 .id(UUID.randomUUID())
                 .content(client.chat(list.stream().reduce("", (a, b) -> a + b)))
                 .build();
     }
-
-
-
 }
