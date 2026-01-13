@@ -9,6 +9,6 @@ public class ChatController {
     @MessageMapping("/api/public/chat")
     @SendTo("/topic/messages")
     public String handleMessage(String message) {
-        return "Serve вововлдов: " + message;
+        return "ur message: " + message;
     }
 }
