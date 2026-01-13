@@ -16,7 +16,10 @@ import java.util.UUID;
 @Table(name = "ai_messages")
 public class AiMessage {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
+
+    private String content;
 
     @OneToOne
     @JoinColumn(name = "schedule_id")

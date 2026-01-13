@@ -1,8 +1,6 @@
 package com.jvmd.mh_backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +16,10 @@ import java.util.UUID;
 @Table(name = "user_messages")
 public class UserMessage {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
 
     private String text;
+
+
 }
