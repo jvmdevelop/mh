@@ -3,6 +3,7 @@ package com.jvmd.mh_backend.controller;
 import com.jvmd.mh_backend.model.AiMessage;
 import com.jvmd.mh_backend.service.rag.RagService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -18,7 +19,7 @@ public class ChatController {
 
     @MessageMapping("/api/public/chat")
     @SendTo("/topic/messages")
-    public AiMessage handleMessage(String message) {
+    public ResponseEntity<AiMessage> handleMessage(String message) {
         AiMessage handledMessage = null;
 
         try {
@@ -26,7 +27,8 @@ public class ChatController {
         } catch (Exception ex)
         {
            log.error(ex.getMessage());
+           return ResponseEntity.badRequest().body(handledMessage);
         }
-        return handledMessage;
+        return ResponseEntity.ok(handledMessage);
     }
 }
