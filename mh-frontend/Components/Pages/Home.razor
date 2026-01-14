@@ -1,12 +1,13 @@
 ﻿@page "/"
 @using MhFrontend.Models
 @using MhFrontend.Services
+@using Microsoft.Extensions.Logging.Abstractions
 
 @code {
     private string UserMessageFace { get; set; } = "";
     private string AiMessageFace { get; set; } = "";
 
-    private readonly IApiService _srv = new ApiService();
+    private readonly IApiService _srv = new ApiService(new NullLogger<IApiService>());
     
     private async void AskButton_OnClick()
     {

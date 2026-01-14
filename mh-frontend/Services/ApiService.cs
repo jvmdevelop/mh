@@ -1,13 +1,14 @@
-using System.Text;
+using System.Net;
 using System.Text.Json;
 using MhFrontend.Models;
 
 namespace MhFrontend.Services;
 
-public class ApiService : IApiService
+public partial class ApiService(ILogger<IApiService> logger) : IApiService
 {
     private readonly HttpClient _client = new();
     private const string BaseUrl = "http://localhost:80";
+    private ILogger <IApiService> _logger = logger;
 
     public async Task<AiMessage?> askBackend(UserMessage userMessage)
     {
@@ -18,7 +19,10 @@ public class ApiService : IApiService
         };
         var result = await _client.PostAsJsonAsync($"{BaseUrl}/api/public/ask", userMessage, options);
         if (!result.IsSuccessStatusCode) return null;
-
+        LogBackendApiResponseStatuscode(result.StatusCode);  
         return await result.Content.ReadFromJsonAsync<AiMessage>();
     }
+
+    [LoggerMessage(LogLevel.Information, "Backend API response: {StatusCode}")]
+    partial void LogBackendApiResponseStatuscode(HttpStatusCode StatusCode);
 }

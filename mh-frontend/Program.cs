@@ -1,4 +1,5 @@
 using MhFrontend.Components;
+using MhFrontend.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
