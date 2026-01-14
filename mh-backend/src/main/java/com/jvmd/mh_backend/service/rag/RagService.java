@@ -1,7 +1,6 @@
 package com.jvmd.mh_backend.service.rag;
 
 import com.jvmd.mh_backend.model.AiMessage;
-import com.jvmd.mh_backend.model.UserMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
