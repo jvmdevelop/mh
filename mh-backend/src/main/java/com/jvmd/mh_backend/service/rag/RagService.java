@@ -1,6 +1,8 @@
 package com.jvmd.mh_backend.service.rag;
 
 import com.jvmd.mh_backend.model.AiMessage;
+import com.jvmd.mh_backend.model.Schedule;
+import com.jvmd.mh_backend.model.Task;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,14 +15,16 @@ public class RagService {
     private final PromtBuilder builder;
     private final RetrivialSearcher searcher;
     private final AiClient client;
-
+    private final TaskFormatter taskFormatter;
 
     public AiMessage handleMessage(String message) {
         List<String> list = searcher.retrieve(message);
         list.add(0, builder.build(message));
+        List<Task> tasks = taskFormatter.format(message);
 
         return AiMessage.builder()
                 .id(UUID.randomUUID())
+                .schedule(Schedule.builder().tasks(tasks).build())
                 .content(client.chat(list.stream().reduce("", (a, b) -> a + b)))
                 .build();
     }

@@ -21,6 +21,21 @@ public class PromtBuilder {
         }
     }
 
+    private final static String taskFormatingPromt= """
+            Сейчас не опирайся на контекст прошлых запросов. Обязательно используй формат: 
+            
+            Название задачи:КонтекстЗадачи; 
+            
+            просто\s
+                        придумай какие задачи поставить по данному сообщению:
+                            
+            """;
+
+
+    public String buildForTasks(String question) {
+        return taskFormatingPromt + question;
+    }
+
     public String build(String question) {
         StringBuilder builder = new StringBuilder();
 
