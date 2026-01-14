@@ -1,13 +1,32 @@
 ﻿@page "/"
-@using Microsoft.AspNetCore.Authentication.BearerToken
+@using MhFrontend.Models
+@using MhFrontend.Services
 
 @code {
-    private string Message { get; set; }
+    private string UserMessageFace { get; set; } = "";
+    private string AiMessageFace { get; set; } = "";
+
+    private readonly IApiService _srv = new ApiService();
+    
+    private async void AskButton_OnClick()
+    {
+        try
+        {
+            var input = new UserMessage(Guid.NewGuid(), UserMessageFace);
+            AiMessageFace = (await _srv.askBackend(input))?.content ?? "Error while request";
+        }
+        catch (Exception e)
+        {
+            AiMessageFace = $"Error while request: {e}";
+        }
+    }
 }
 
 <PageTitle>Home</PageTitle>
 
 <h1>Numen!</h1>
-
-<input @bind="Message" placeholder="My problem..." />
-<p>@Message</p>
+<ul>
+    <li><p>@UserMessageFace</p></li>
+</ul>
+<input @bind="UserMessageFace" placeholder="My problem..." />
+<button @onclick="AskButton_OnClick">-></button>
