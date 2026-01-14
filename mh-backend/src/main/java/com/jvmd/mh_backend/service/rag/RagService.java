@@ -1,7 +1,6 @@
 package com.jvmd.mh_backend.service.rag;
 
 import com.jvmd.mh_backend.model.AiMessage;
-import com.jvmd.mh_backend.model.UserMessage;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +18,6 @@ public class RagService {
     public AiMessage handleMessage(String message) {
         List<String> list = searcher.retrieve(message);
         list.add(0, builder.build(message));
-
-
-
 
         return AiMessage.builder()
                 .id(UUID.randomUUID())
