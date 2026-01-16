@@ -8,7 +8,6 @@ public partial class ApiService(ILogger<IApiService> logger) : IApiService
 {
     private readonly HttpClient _client = new();
     private const string BaseUrl = "http://localhost:80";
-    private ILogger <IApiService> _logger = logger;
 
     public async Task<AiMessage?> askBackend(UserMessage userMessage)
     {
