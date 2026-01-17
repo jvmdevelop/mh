@@ -1,63 +1,103 @@
-﻿@page "/"
+@page "/"
 @using MhFrontend.Models
 @using MhFrontend.Services
 
 <PageTitle>Numen - Математический ИИ</PageTitle>
 
-<div class="main-container">
-    <h1 class="brand-header">Numen</h1>
+<div class="app-layout">
 
-    <div class="chat-history">
-        @if (!string.IsNullOrEmpty(UserMessageFace))
-        {
-            <div class="message user-message">
-                @UserMessageFace
-            </div>
-        }
+    <!-- Боковая панель -->
+    <aside class="sidebar">
+        <h2 class="sidebar-title">История</h2>
+        <div class="history-list">
+            @foreach (var msg in MessageHistory)
+            {
+                <div class="history-item" @onclick="() => LoadMessage(msg)">
+                    <strong>@msg.UserMessageText</strong>
+                    <div class="ai-snippet">@msg.AiMessageText?.Substring(0, Math.Min(30, msg.AiMessageText.Length))...</div>
+                </div>
+            }
+        </div>
+    </aside>
 
-        @if (!string.IsNullOrEmpty(AiMessageFace))
-        {
-            <div class="message ai-message">
-                <strong>Numen:</strong><br />
-                @AiMessageFace
-            </div>
-        }
-    </div>
+    <!-- Основной чат -
+    <main class="main-container">
+        <h1 class="brand-header">Numen</h1>
 
-    <div class="input-area">
-        <input @bind="UserMessageFace" 
-               @bind:event="oninput"
-               placeholder="Введите математическую задачу..." 
-               @onkeyup="HandleKeyUp" />
-        <button class="send-btn" @onclick="AskButton_OnClick">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
-                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
-            </svg>
-        </button>
-    </div>
+        <div class="chat-history" @ref="_chatHistoryDiv">
+            @foreach (var msg in MessageHistory)
+            {
+                <div class="message user-message">
+                    @msg.UserMessageText
+                </div>
+                <div class="message ai-message">
+                    <strong>Numen:</strong><br />
+                    @msg.AiMessageText
+                </div>
+            }
+
+            @if (_isProcessing)
+            {
+                <div class="message ai-message">
+                    <em>Numen думает...</em>
+                </div>
+            }
+        </div>
+
+        <div class="input-area">
+            <input @bind="UserMessageFace" 
+                   @bind:event="oninput"
+                   placeholder="Введите математическую задачу..." 
+                   @onkeyup="HandleKeyUp" />
+            <button class="send-btn" @onclick="AskButton_OnClick">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                </svg>
+            </button>
+        </div>
+    </main>
 </div>
 
 @code {
     private string UserMessageFace { get; set; } = ""; 
-    private string AiMessageFace { get; set; } = ""; 
     private bool _isProcessing = false;
-
     private readonly IApiService _srv = new ApiService(new Logger<IApiService>(new LoggerFactory())); 
+    private ElementReference _chatHistoryDiv;
+
+    private List<UserMessageRecord> MessageHistory { get; set; } = new();
 
     private async Task AskButton_OnClick() 
     {
         if (string.IsNullOrWhiteSpace(UserMessageFace) || _isProcessing) return;
 
         _isProcessing = true;
+        var userText = UserMessageFace;
+        UserMessageFace = "";
+        StateHasChanged();
+
         try
         {
-            var input = new UserMessage(Guid.NewGuid(), UserMessageFace); 
+            var input = new UserMessage(Guid.NewGuid(), userText); 
             var result = await _srv.askBackend(input); 
-            AiMessageFace = result?.content ?? "Ошибка при запросе"; 
+            var aiText = result?.content ?? "Ошибка при запросе"; 
+
+            MessageHistory.Add(new UserMessageRecord
+            {
+                UserMessageText = userText,
+                AiMessageText = aiText
+            })
+
+            
+            await Task.Delay(50); 
+            await _chatHistoryDiv.FocusAsync(); 
         }
         catch (Exception e)
         {
-            AiMessageFace = $"Ошибка при запросе: {e.Message}"; 
+            MessageHistory.Add(new UserMessageRecord
+            {
+                UserMessageText = userText,
+                AiMessageText = $"Ошибка: {e.Message}"
+            });
         }
         finally
         {
@@ -71,5 +111,17 @@
         {
             await AskButton_OnClick();
         }
+    }
+
+    private void LoadMessage(UserMessageRecord record)
+    {
+        UserMessageFace = record.UserMessageText;
+        StateHasChanged();
+    }
+
+    public class UserMessageRecord
+    {
+        public string UserMessageText { get; set; } = "";
+        public string AiMessageText { get; set; } = "";
     }
 }
