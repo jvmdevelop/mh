@@ -146,17 +146,17 @@ curl -X POST http://localhost:8080/api/tasks \
 
 ## AI Integration
 
-The application integrates with AI models for:
-- Mathematical problem solving
-- Step-by-step explanations
-- Graph and visualization generation
-- Natural language processing
+the application integrates with AI models for:
+- mathematical problem solving
+- step-by-step explanations
+- graph and visualization generation
+- natural language processing
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Submit a pull request
+1. fork the repository
+2. create a feature branch
+3. submit a pull request
 
 ## License
 
