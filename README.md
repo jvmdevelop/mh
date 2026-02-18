@@ -10,7 +10,7 @@
 
 <br>
 
-**mh** is an intelligent educational platform powered by Spring Boot and AI, featuring RAG (Retrieval-Augmented Generation) capabilities for mathematical problem solving, task management, and scheduling.
+**mh** is an intelligent educational platform powered by Spring Boot and AI, featuring RAG capabilities for mathematical problem solving, task management, and scheduling.
 
 ## Features
 
