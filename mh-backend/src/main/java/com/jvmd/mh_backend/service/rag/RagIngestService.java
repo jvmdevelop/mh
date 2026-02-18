@@ -5,6 +5,7 @@ import com.jvmd.mh_backend.repo.RagDocumentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -21,5 +22,14 @@ public class RagIngestService {
             module,
             docId
         ));
+    }
+    
+    public void ingestDocument(String content) {
+        String docId = UUID.randomUUID().toString();
+        saveChunk(docId, "user-input", "User Document", content);
+    }
+    
+    public List<RagDocument> getDocumentHistory() {
+        return (List<RagDocument>) repository.findAll();
     }
 }

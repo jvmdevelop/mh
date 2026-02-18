@@ -1,7 +1,0 @@
-﻿services:
-  mhfrontend:
-    image: mhfrontend
-    build:
-      context: .
-      dockerfile: Dockerfile
-
